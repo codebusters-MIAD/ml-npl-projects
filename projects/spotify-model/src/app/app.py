@@ -7,8 +7,7 @@ def handler(event, context):
     Lambda main method
     """
     body = event.get('body') or {}
-    path = event.get('path') or {}
-    http_method = event.get('httpMethod') or {}
-    request_id = event['requestContext']['requestId'] or {}
-    return ModelService(body=body, http_method=http_method, path=path,
-                             request_id=request_id).make_operation()
+    requestContext = event.get("requestContext", {})
+    http_method = requestContext.get("http", {}).get("method","null")
+    request_id = requestContext.get("requestId", "null")
+    return ModelService(body=body, http_method=http_method, request_id=request_id).make_operation()

@@ -1,5 +1,9 @@
 ###### Requirements with Version Specifiers ######
 awslambdaric
 lambda-gateway~=1.0.0
-schema~=0.7.5
-pytz~=2022.1
+pydantic==2.6.4
+xgboost==2.1.4
+joblib==1.4.2
+pandas==2.2.3
+scikit-learn==1.6.1
+numpy==2.0.2
