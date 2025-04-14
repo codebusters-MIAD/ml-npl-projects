@@ -1,9 +1,9 @@
 from pydantic import ValidationError
 
 from http_response import HTTPResponse
-from wrong_request_exception import WrongRequestException
 from predict_request import PredictRequest
 from predict_model import  PredictModel
+from util import Utils
 
 
 class ModelService:
@@ -21,13 +21,12 @@ class ModelService:
 
     def make_operation(self):
         try:
-
-            # Request validation for CORS
             if self.http_method == HTTPResponse.OPTIONS:
                 return HTTPResponse.options_response()
 
             parsed = PredictRequest.model_validate_json(self.body)
-            probability = PredictModel.parse_str("https://google.com")
+            features = Utils.extract_features(str(parsed.url))
+            result = PredictModel.predict(features)
 
             response = HTTPResponse.successful_response({
                 "requestId": self.request_id,
@@ -35,12 +34,10 @@ class ModelService:
                 "HTTP Method": self.http_method,
                 "Body": self.body,
                 "ParseBody": str(parsed.url),
-                "successful": f"probability: {probability}",
+                "successful": f"Phishing probability: {result[1][0][1]:.4f}",
                 "failures": ""})
 
         except ValidationError as ex:
-            response = HTTPResponse.bad_request_response(err=ex.message)
-        except WrongRequestException as ex:
             response = HTTPResponse.bad_request_response(err=ex.message)
         except BaseException as ex:
             exception = str(ex)

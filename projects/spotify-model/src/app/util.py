@@ -1,34 +1,37 @@
-import ast
-from wrong_request_exception import WrongRequestException
 import logging as logger
+import numpy as np
+import re
 
-ERR_STR_PARSE = "Wrong structure on the json string when it parse: {}"
-ERR_WRONG_BODY_PARSE = "Wrong structure on the body when it parse: {}"
-WAIT_ERR = "There is not presence of element located by: {} and the values is: {}"
+# Lista de keywords
+keywords_list = ['https', 'login', '.php', '.html', '@', 'sign']
 
 
 class Utils:
-    ERR_INTERNAL_SERVER = 'Internal server error'
-    ADD_A_WORD_AND_REMOVE = "a\b"
-    JS_TO_FILL_INPUT = "arguments[0].value=arguments[1]"
 
     @staticmethod
-    def parse_body(body):
-        try:
-            return ast.literal_eval(body)
-        except Exception:
-            err = ERR_WRONG_BODY_PARSE.format(body)
-            logger.error(err)
-            raise WrongRequestException(message=err)
+    def extract_features(url):
+        logger.info(f"URL : {url}")
+        features = []
 
-    @staticmethod
-    def parse_str(string):
+        for keyword in keywords_list:
+            features.append(1 if keyword in url else 0)
+
+        features.append(len(url) - 2)
+
         try:
-            return ast.literal_eval(string)
-        except Exception:
-            err = ERR_STR_PARSE.format(string)
-            logger.error(err)
-            raise BaseException(message=err)
+            domain = re.split(r'\/+', url)[1]
+        except IndexError:
+            domain = ''
+
+        features.append(len(domain))
+
+        is_ip = domain.replace('.', '').isdigit()
+        features.append(1 if is_ip else 0)
+
+        features.append(url.count('com'))
+
+        return np.array([features], dtype=np.float32)
+
 
     @staticmethod
     def show_log_banner(message):

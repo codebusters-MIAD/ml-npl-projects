@@ -1,0 +1,21 @@
+name: env-spotify
+channels:
+  - conda-forge
+  - defaults
+dependencies:
+  - python=3.10
+  - numpy=2.2.4
+  - pandas=2.2.3
+  - scikit-learn=1.6.1
+  - onnx=1.17.0
+  - pip
+  - pip:
+      - awslambdaric==3.0.2
+      - lambda-gateway==1.1.0
+      - pydantic==2.11.3
+      - xgboost==3.0.0
+      - protobuf==4.25.3
+      - onnx==1.17.0
+      - skl2onnx==1.17.0
+      - onnxruntime==1.21.0
+      - boto3==1.34.82

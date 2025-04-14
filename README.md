@@ -58,7 +58,20 @@ the project to create the infra is located on:
 cd infrastructure/components/spotify
 # To check the current infra
 terraform init
+```
+
+### Create annaconda Enviroment
+
+```shell
+
+# Create
+conda env create -f environment.yml
+# To activate this environment, use
+conda activate env-spotify
+# To deactivate an active environment, use
+conda deactivate
 
 ```
+
 
 
