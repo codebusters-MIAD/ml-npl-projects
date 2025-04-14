@@ -8,11 +8,7 @@ from util import Utils
 
 class ModelService:
     ERR_INTERNAL_SERVER = 'Internal server error'
-    ERR_WRONG_STRUCTURE = 'The body data is wrong, Exception: {}'
-
-    IN_PROGRESS = "In progress"
     COMPLETED = "Completed"
-    FAILED = "Failed"
 
     def __init__(self, body, http_method, request_id):
         self.body = body
