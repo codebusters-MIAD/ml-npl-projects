@@ -6,7 +6,6 @@ import json
 DEFAULT_ENV_FILE = "../../resources/app_env/local.ini"
 ERR_COULD_NOT_VARIABLES = 'It could NOT load the env variables'
 
-
 class SettingsLoader(object):
     """
     Configuration class to loa:d the properties depending on the environment

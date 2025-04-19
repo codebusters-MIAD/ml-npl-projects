@@ -2,9 +2,10 @@ locals {
   image_tag = "${aws_ecr_repository.ecr_repo.repository_url}:${var.ecr_image_tag}"
 }
 
+
 resource "aws_ecr_repository" "ecr_repo" {
   name = local.ecr_repo
-
+  force_delete =  var.force_delete
   lifecycle {
     ignore_changes = [image_scanning_configuration]
   }

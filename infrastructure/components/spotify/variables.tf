@@ -16,11 +16,20 @@ variable "container_path_env" {
   default = "./resources/app_env/dev.ini"
 }
 
+variable "model_bucket_name" {
+  type    = string
+  default = "common-onnx-models-bucket"
+}
+
+variable "model_bucket_object" {
+  type    = string
+  default = "models/spotify-regression-model-bins/"
+}
 #=======================================================================================================================
 # AWS BUDGET TAGS
 #=======================================================================================================================
 variable "aws_app_tags" {
-  type    = object({
+  type = object({
     BudgetId = string, Project = string
   })
   default = {
@@ -28,7 +37,6 @@ variable "aws_app_tags" {
     Project  = "spotify-class-model"
   }
 }
-
 #=======================================================================================================================
 # LAMBDAS
 #=======================================================================================================================
@@ -51,7 +59,6 @@ variable "assume_role_policy_lambda" {
 }
 EOF
 }
-
 #=======================================================================================================================
 # Performance test
 #=======================================================================================================================
@@ -80,12 +87,15 @@ variable "lambda_trigger_script_file" {
 }
 
 variable "lambda_arn_policies" {
-  type    = map(object({
+  type = map(object({
     arn = string
   }))
   default = {
-    AWSLambdaBasicExecutionRole     = {
+    AWSLambdaBasicExecutionRole = {
       arn = "arn:aws:iam::aws:policy/service-role/AWSLambdaBasicExecutionRole"
+    },
+    AmazonS3FullAccess = {
+      arn = "arn:aws:iam::aws:policy/AmazonS3FullAccess"
     }
   }
 }
@@ -99,7 +109,7 @@ variable "lambda_memory_size" {
 }
 
 variable "lambda_storage_size" {
-  type = number
+  type    = number
   default = 512
 }
 
@@ -110,11 +120,6 @@ variable "lambda_storage_size" {
 #=======================================================================================================================
 # API Gateway
 #=======================================================================================================================
-variable "domain" {
-  type    = string
-  default = "dc68032.easn.morningstar.com"
-}
-
 # variable "route53_s3_perf_test_subdomain" {
 #   default = "api"
 # }
@@ -135,11 +140,5 @@ variable "domain" {
 #   default = "Usage plan for At performance test lambda"
 # }
 #
-# variable "perf_test_api_gw_name" {
-#   default = "perf-test-ui-integration"
-# }
-# variable "ssl_certificate_arn" {
-#   type    = string
-#   default = "arn:aws:acm:us-east-1:179020893316:certificate/251ed29b-7284-4f28-8197-b220819be5db"
-# }
+
 

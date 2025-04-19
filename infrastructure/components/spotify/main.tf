@@ -1,16 +1,20 @@
 #-----------------------------------------------------------------------------------------------------------------------
 #                                           ..::Project 1 - Resources::..
 #-----------------------------------------------------------------------------------------------------------------------
-# The components
+# Common components: Lambda to call model pre train about spotify
 #=======================================================================================================================
-# LAMBDAS
-#=======================================================================================================================
-# Lambda to call model pre train about spotify
-#-----------------------------------------------------------------------------------------------------------------------
 locals {
   lambda_name = "${var.aws_app_tags.Project}-function"
 }
 
+# Storage to persist the model
+resource "aws_s3_object" "s3_onnx_models" {
+  bucket  = data.aws_s3_bucket.s3.id
+  key     = var.model_bucket_object
+  content = ""  # Empty content to simulate a folder
+}
+
+# Lambda permission
 module "aws_iam_spotify_class_model_profile" {
   source      = "../../shared/iam-role-attachment"
   environment = var.environment
@@ -43,37 +47,15 @@ module "aws_lambda_spotify_class_model" {
   tags     = var.aws_app_tags
 }
 
-resource "aws_apigatewayv2_api" "spotify_http_api" {
-  name          = "spotify-api"
-  protocol_type = "HTTP"
-  tags          = var.aws_app_tags
-}
-
-resource "aws_apigatewayv2_integration" "spotify_lambda_integration" {
-  api_id                 = aws_apigatewayv2_api.spotify_http_api.id
-  integration_type       = "AWS_PROXY"
-  integration_uri        = module.aws_lambda_spotify_class_model.arn
-  integration_method     = "POST"
-  payload_format_version = "2.0"
-}
-
-resource "aws_apigatewayv2_route" "spotify_predict_route" {
-  api_id    = aws_apigatewayv2_api.spotify_http_api.id
-  route_key = "POST /predict"
-  target    = "integrations/${aws_apigatewayv2_integration.spotify_lambda_integration.id}"
-}
-
-resource "aws_apigatewayv2_stage" "default" {
-  api_id      = aws_apigatewayv2_api.spotify_http_api.id
-  name        = "$default"
-  auto_deploy = true
-  tags        = var.aws_app_tags
-}
-
-resource "aws_lambda_permission" "allow_api_gateway_invoke_lambda" {
-  statement_id  = "AllowAPIGatewayInvokeSpotify"
-  action        = "lambda:InvokeFunction"
-  function_name = module.aws_lambda_spotify_class_model.function_name
-  principal     = "apigateway.amazonaws.com"
-  source_arn    = "${aws_apigatewayv2_api.spotify_http_api.execution_arn}/*/*"
+# Create an API Gateway to enable the model spotify service
+module "spotify_api_gateway" {
+  source               = "../../shared/api-gateway2"
+  lambda_function_arn  = module.aws_lambda_spotify_class_model.arn
+  lambda_function_name = module.aws_lambda_spotify_class_model.function_name
+  api_name             = "spotify-api"
+  route_key            = "POST /predict"
+  stage_name           = "DEV"
+  aws_app_tags         = var.aws_app_tags
+  environment          = var.environment
+  tags                 = var.aws_app_tags
 }

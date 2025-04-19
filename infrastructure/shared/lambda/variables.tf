@@ -73,3 +73,8 @@ variable "cw_log_group_lambda" {
   type    = string
   default = "/aws/lambda/"
 }
+
+variable "force_delete" {
+  default = false
+  type = bool
+}
