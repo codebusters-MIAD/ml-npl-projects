@@ -26,12 +26,7 @@ class ModelService:
 
             response = HTTPResponse.successful_response({
                 "requestId": self.request_id,
-                "status": self.COMPLETED,
-                "HTTP Method": self.http_method,
-                "Body": self.body,
-                "ParseBody": str(parsed.url),
-                "successful": f"Phishing probability: {result[1][0][1]:.4f}",
-                "failures": ""})
+                "successful": f"Popularity: {result[1][0][1]:.4f}"})
 
         except ValidationError as ex:
             response = HTTPResponse.bad_request_response(err=ex.message)

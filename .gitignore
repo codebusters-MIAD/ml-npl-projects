@@ -60,7 +60,6 @@ override.tf.json
 *_override.tf.json
 
 # Sensitive CLI credentials
-.terraform.lock.hcl
 .terraformrc
 terraform.rc
 

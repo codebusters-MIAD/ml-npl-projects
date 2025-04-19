@@ -1,7 +1,5 @@
 from model_service import ModelService
 
-ERR_WRONG_PATH = 'Path not supported'
-
 def handler(event, context):
     """
     Lambda main method

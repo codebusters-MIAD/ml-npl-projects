@@ -6,6 +6,9 @@ MIAD Machine Learning and Natural Processing language Repository for the project
 
 This lambda permits a run a model to predic spotify classification model.
 
+![Arquitectura Serverless AWS](./resources/architecture.png)
+
+
 ### Deploy locally with Docker locally
 - Build docker image:
 
